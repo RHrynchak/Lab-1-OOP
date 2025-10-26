@@ -1,0 +1,111 @@
+﻿<Window x:Class="Lab_1.FormatDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Форматування комірки" Height="450" Width="400"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шрифт -->
+        <GroupBox Header="Шрифт" Grid.Row="0" Margin="0,0,0,10">
+            <StackPanel Margin="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox x:Name="FontFamilyCombo" Grid.Column="0" Margin="0,0,5,0"/>
+                    <TextBox x:Name="FontSizeTextBox" Grid.Column="1" Text="11"/>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <CheckBox x:Name="BoldCheckBox" Content="Жирний" Margin="0,0,15,0"/>
+                    <CheckBox x:Name="ItalicCheckBox" Content="Курсив" Margin="0,0,15,0"/>
+                    <CheckBox x:Name="UnderlineCheckBox" Content="Підкреслений"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Кольори -->
+        <GroupBox Header="Кольори" Grid.Row="1" Margin="0,0,0,10">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Текст:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="TextColorCombo" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Фон:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="BackgroundColorCombo" Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Вирівнювання -->
+        <GroupBox Header="Вирівнювання" Grid.Row="2" Margin="0,0,0,10">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Горизонтально:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="HorizontalAlignCombo" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5">
+                    <ComboBoxItem Content="Ліворуч" Tag="Left"/>
+                    <ComboBoxItem Content="По центру" Tag="Center"/>
+                    <ComboBoxItem Content="Праворуч" Tag="Right"/>
+                </ComboBox>
+
+                <TextBlock Text="Вертикально:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="VerticalAlignCombo" Grid.Row="1" Grid.Column="1">
+                    <ComboBoxItem Content="Зверху" Tag="Top"/>
+                    <ComboBoxItem Content="По центру" Tag="Center"/>
+                    <ComboBoxItem Content="Знизу" Tag="Bottom"/>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+
+        <!-- Розміри -->
+        <GroupBox Header="Розміри" Grid.Row="3" Margin="0,0,0,10">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Ширина:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="ColumnWidthTextBox" Grid.Row="0" Grid.Column="1" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Висота:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox x:Name="RowHeightTextBox" Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="80" Margin="0,0,10,0" Click="OkButton_Click"/>
+            <Button Content="Скасувати" Width="80" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

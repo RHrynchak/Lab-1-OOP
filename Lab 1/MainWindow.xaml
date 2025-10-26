@@ -1,0 +1,231 @@
+﻿<Window x:Class="Lab_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Lab_1"
+        Title="Cringe" Height="600" Width="1000"
+        WindowState="Maximized">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="CellTextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="4,2"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="HeaderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#F0F0F0"/>
+            <Setter Property="BorderBrush" Value="#D0D0D0"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- Меню -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Створити" Command="{Binding NewCommand}" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="Відкрити..." Command="{Binding OpenCommand}" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="Зберегти" Command="{Binding SaveCommand}" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Зберегти як..." Command="{Binding SaveAsCommand}"/>
+                <Separator/>
+                <MenuItem Header="Google Drive">
+                    <MenuItem Header="Відкрити з Drive" Command="{Binding OpenFromDriveCommand}"/>
+                    <MenuItem Header="Зберегти на Drive" Command="{Binding SaveToDriveCommand}"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Вихід" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Редагування">
+                <MenuItem Header="Вирізати" Command="{Binding CutCommand}" InputGestureText="Ctrl+K"/>
+                <MenuItem Header="Копіювати" Command="{Binding CopyCommand}" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="Вставити" Command="{Binding PasteCommand}" InputGestureText="Ctrl+V"/>
+            </MenuItem>
+            <MenuItem Header="Таблиця">
+                <MenuItem Header="Вставити рядок" Command="{Binding InsertRowCommand}"/>
+                <MenuItem Header="Видалити рядок" Command="{Binding DeleteRowCommand}"/>
+                <MenuItem Header="Вставити стовпець" Command="{Binding InsertColumnCommand}"/>
+                <MenuItem Header="Видалити стовпець" Command="{Binding DeleteColumnCommand}"/>
+                <Separator/>
+                <MenuItem Header="Форматування..." Command="{Binding FormatCellCommand}" InputGestureText="Ctrl+1"/>
+                <Separator/>
+                <MenuItem Header="Перерахувати" Command="{Binding RecalculateCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Вигляд">
+                <MenuItem Header="Режим відображення">
+                    <MenuItem Header="Значення" IsCheckable="True" 
+                              IsChecked="{Binding ShowValues}"/>
+                    <MenuItem Header="Вирази" IsCheckable="True" 
+                              IsChecked="{Binding ShowFormulas}"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Допомога">
+                <MenuItem Header="Інструкція користувача" Command="{Binding ShowHelpCommand}"/>
+                <MenuItem Header="Про програму" Command="{Binding ShowAboutCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Панель інструментів -->
+        <ToolBar DockPanel.Dock="Top">
+            <Button Command="{Binding NewCommand}" ToolTip="Створити">📄</Button>
+            <Button Command="{Binding OpenCommand}" ToolTip="Відкрити">📂</Button>
+            <Button Command="{Binding SaveCommand}" ToolTip="Зберегти">💾</Button>
+            <Separator/>
+            <Button Command="{Binding CutCommand}" ToolTip="Вирізати">✂</Button>
+            <Button Command="{Binding CopyCommand}" ToolTip="Копіювати">📋</Button>
+            <Button Command="{Binding PasteCommand}" ToolTip="Вставити">📌</Button>
+            <Separator/>
+            <Button Command="{Binding RecalculateCommand}" ToolTip="Перерахувати">🔄</Button>
+        </ToolBar>
+
+        <!-- Рядок формул -->
+        <Grid DockPanel.Dock="Top" Height="30" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="{Binding SelectedCellName}" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       FontWeight="Bold" FontSize="14"/>
+
+            <TextBox Grid.Column="1" Text="{Binding FormulaBarText, UpdateSourceTrigger=PropertyChanged}"
+                     VerticalContentAlignment="Center" FontSize="12"
+                     BorderBrush="#D0D0D0" BorderThickness="1,0,0,1"
+                     Padding="5,0"/>
+        </Grid>
+
+        <!-- Статус бар -->
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusText}"/>
+            </StatusBarItem>
+            <Separator/>
+            <StatusBarItem>
+                <TextBlock>
+                    <Run Text="Рядки: "/>
+                    <Run Text="{Binding RowCount, Mode=OneWay}"/>
+                    <Run Text=" Стовпці: "/>
+                    <Run Text="{Binding ColumnCount, Mode=OneWay}"/>
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- Головна таблиця -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto">
+            <Grid x:Name="SpreadsheetGrid" Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Верхній лівий кут -->
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}"/>
+
+                <!-- Заголовки стовпців -->
+                <ItemsControl Grid.Row="0" Grid.Column="1" 
+                              ItemsSource="{Binding ColumnHeaders}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource HeaderStyle}" 
+                                    Width="{Binding Width}" Height="25">
+                                <TextBlock Text="{Binding Name}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Заголовки рядків -->
+                <ItemsControl Grid.Row="1" Grid.Column="0" 
+                              ItemsSource="{Binding RowHeaders}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource HeaderStyle}" 
+                                    Width="50" Height="{Binding Height}">
+                                <TextBlock Text="{Binding Number}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold"/>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Комірки таблиці -->
+                <ItemsControl Grid.Row="1" Grid.Column="1" 
+                              ItemsSource="{Binding Rows}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding Cells}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#D0D0D0" 
+                                                BorderThickness="0,0,1,1"
+                                                Width="{Binding Width}" 
+                                                Height="{Binding Height}"
+                                                Background="{Binding Background}">
+                                            <Grid>
+                                                <TextBlock Text="{Binding DisplayText}" 
+                                                           Padding="4,2"
+                                                           VerticalAlignment="Center"
+                                                           FontWeight="{Binding FontWeight}"
+                                                           FontStyle="{Binding FontStyle}"
+                                                           TextDecorations="{Binding TextDecorations}"
+                                                           Foreground="{Binding Foreground}"
+                                                           Visibility="{Binding IsNotEditing, Converter={StaticResource BoolToVis}}"/>
+
+                                                <TextBox Text="{Binding EditText, UpdateSourceTrigger=PropertyChanged}" 
+                                                         Style="{StaticResource CellTextBoxStyle}"
+                                                         Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}"
+                                                         PreviewKeyDown="CellTextBox_PreviewKeyDown"/>
+                                            </Grid>
+
+                                            <Border.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" 
+                                                              Command="{Binding DataContext.SelectCellCommand, 
+                                                                       RelativeSource={RelativeSource AncestorType=Window}}"
+                                                              CommandParameter="{Binding}"/>
+                                                <MouseBinding MouseAction="LeftDoubleClick" 
+                                                              Command="{Binding DataContext.EditCellCommand, 
+                                                                       RelativeSource={RelativeSource AncestorType=Window}}"
+                                                              CommandParameter="{Binding}"/>
+                                            </Border.InputBindings>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
