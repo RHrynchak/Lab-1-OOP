@@ -109,7 +109,6 @@ namespace Lab_1
 
                 string fileName = Path.GetFileName(LocalFilePath);
 
-                // Перевірка чи файл вже існує
                 var existingFile = _files.FirstOrDefault(f => f.Name == fileName);
 
                 if (existingFile != null)
@@ -280,7 +279,6 @@ namespace Lab_1
         }
     }
 
-    // Converter для показу повідомлення при порожньому списку
     public class CountToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -49,14 +49,11 @@ namespace Lab_1
 
             if (e.Key == Key.Enter)
             {
-                // Завершення редагування та перехід вниз
                 cellVm.IsEditing = false;
 
-                // Оновлення даних
                 string colName = SpreadsheetUtils.ToColumnName(cellVm.Column);
                 viewModel.FormulaBarText = cellVm.EditText;
 
-                // Перехід до наступної комірки вниз
                 int nextRow = cellVm.Row + 1;
                 if (nextRow < viewModel.RowCount)
                 {
@@ -68,19 +65,16 @@ namespace Lab_1
             }
             else if (e.Key == Key.Escape)
             {
-                // Скасування редагування
                 cellVm.IsEditing = false;
                 e.Handled = true;
             }
             else if (e.Key == Key.Tab)
             {
-                // Завершення редагування та перехід вправо
                 cellVm.IsEditing = false;
 
                 string colName = SpreadsheetUtils.ToColumnName(cellVm.Column);
                 viewModel.FormulaBarText = cellVm.EditText;
 
-                // Перехід до наступної комірки вправо
                 int nextCol = cellVm.Column + 1;
                 if (nextCol < viewModel.ColumnCount)
                 {

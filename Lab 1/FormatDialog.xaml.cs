@@ -107,15 +107,12 @@ namespace Lab_1
             ItalicCheckBox.IsChecked = Format.IsItalic;
             UnderlineCheckBox.IsChecked = Format.IsUnderline;
 
-            // Встановлення кольорів
             SelectColorByHex(TextColorCombo, Format.TextColor);
             SelectColorByHex(BackgroundColorCombo, Format.BackgroundColor);
 
-            // Вирівнювання
             SelectComboBoxItem(HorizontalAlignCombo, Format.HorizontalAlignment.ToString());
             SelectComboBoxItem(VerticalAlignCombo, Format.VerticalAlignment.ToString());
 
-            // Розміри
             ColumnWidthTextBox.Text = ColumnWidth.ToString();
             RowHeightTextBox.Text = RowHeight.ToString();
         }
@@ -156,14 +153,12 @@ namespace Lab_1
         {
             try
             {
-                // Шрифт
                 Format.FontName = FontFamilyCombo.SelectedItem?.ToString() ?? "Calibri";
                 Format.FontSize = int.Parse(FontSizeTextBox.Text);
                 Format.IsBold = BoldCheckBox.IsChecked ?? false;
                 Format.IsItalic = ItalicCheckBox.IsChecked ?? false;
                 Format.IsUnderline = UnderlineCheckBox.IsChecked ?? false;
 
-                // Кольори
                 if (TextColorCombo.SelectedItem is ComboBoxItem textColorItem &&
                     textColorItem.Background is SolidColorBrush textBrush)
                 {
@@ -176,7 +171,6 @@ namespace Lab_1
                     Format.BackgroundColor = bgBrush.Color.ToString();
                 }
 
-                // Вирівнювання
                 if (HorizontalAlignCombo.SelectedItem is ComboBoxItem hAlignItem)
                 {
                     Format.HorizontalAlignment = (Models.Enums.HorizontalAlignment)Enum.Parse<HorizontalAlignment>(hAlignItem.Tag.ToString());
@@ -187,7 +181,6 @@ namespace Lab_1
                     Format.VerticalAlignment = (Models.Enums.VerticalAlignment)Enum.Parse<VerticalAlignment>(vAlignItem.Tag.ToString());
                 }
 
-                // Розміри
                 ColumnWidth = double.Parse(ColumnWidthTextBox.Text);
                 RowHeight = double.Parse(RowHeightTextBox.Text);
 
