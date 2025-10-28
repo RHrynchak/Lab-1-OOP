@@ -85,5 +85,10 @@ namespace Lab_1
                 e.Handled = true;
             }
         }
+        private void MyTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            tb.CaretIndex = tb.Text.Length;
+        }
     }
 }

@@ -92,7 +92,8 @@
             <TextBox Grid.Column="1" Text="{Binding FormulaBarText, UpdateSourceTrigger=PropertyChanged}"
                      VerticalContentAlignment="Center" FontSize="12"
                      BorderBrush="#D0D0D0" BorderThickness="1,0,0,1"
-                     Padding="5,0"/>
+                     Padding="5,0"
+                     GotFocus="MyTextBox_GotFocus"/>
         </Grid>
 
         <!-- Статус бар -->
