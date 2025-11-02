@@ -6,30 +6,24 @@ namespace Lab_1_UnitTests
     public class SpreadsheetUtilsTests
     {
         [TestMethod]
-        public void ToColumnName_Index26_ReturnsAA()
+        public void ToColumnName_Index26()
         {
-            // Arrange
             int columnIndex = 702;
             string expected = "AAA";
 
-            // Act
             string actual = SpreadsheetUtils.ToColumnName(columnIndex);
 
-            // Assert
             Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void ToColumnIndex_NameAB_Returns27()
+        public void ToColumnIndex_NameAB()
         {
-            // Arrange
             string columnName = "AB";
             int expected = 27;
 
-            // Act
             int actual = SpreadsheetUtils.ToColumnIndex(columnName);
 
-            // Assert
             Assert.AreEqual(expected, actual);
         }
     }

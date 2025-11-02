@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
-using Lab_1.Models; // Замініть на правильний простір імен вашого проєкту
+using Lab_1.Models;
 using Lab_1.Models.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
@@ -11,28 +11,20 @@ namespace Lab_1_UnitTests
     [TestClass]
     public class LexerTests
     {
-        // =================================================================
-        // ПОЗИТИВНІ ТЕСТИ (перевірка правильного розпізнавання)
-        // =================================================================
-
         [TestMethod]
-        public void Tokenise_EmptyString_ReturnsOnlyEndToken()
+        public void Tokenise_EmptyString()
         {
-            // Arrange
             var lexer = new Lexer("");
             var expected = new List<(TokenType type, string value)> { (TokenType.End, "") };
 
-            // Act
             var actual = lexer.Tokenise();
 
-            // Assert
             AssertTokensMatch(expected, actual);
         }
 
         [TestMethod]
-        public void Tokenise_NumberAndCellReference_ReturnsCorrectTokens()
+        public void Tokenise_NumberAndCellReference()
         {
-            // Arrange
             var lexer = new Lexer("123 B45");
             var expected = new List<(TokenType type, string value)>
         {
@@ -41,17 +33,14 @@ namespace Lab_1_UnitTests
             (TokenType.End, "")
         };
 
-            // Act
             var actual = lexer.Tokenise();
 
-            // Assert
             AssertTokensMatch(expected, actual);
         }
 
         [TestMethod]
-        public void Tokenise_AllOperatorsAndParentheses_ReturnsCorrectTokens()
+        public void Tokenise_AllOperatorsAndParentheses()
         {
-            // Arrange
             var lexer = new Lexer("+-=<> () ! && ||");
             var expected = new List<(TokenType type, string value)>
         {
@@ -68,17 +57,14 @@ namespace Lab_1_UnitTests
             (TokenType.End, "")
         };
 
-            // Act
             var actual = lexer.Tokenise();
 
-            // Assert
             AssertTokensMatch(expected, actual);
         }
 
         [TestMethod]
-        public void Tokenise_KeywordsAreCaseInsensitive_ReturnsCorrectTokens()
+        public void Tokenise_KeywordsAreCaseInsensitive()
         {
-            // Arrange
             var lexer = new Lexer("nOt AnD oR eQv");
             var expected = new List<(TokenType type, string value)>
         {
@@ -89,17 +75,14 @@ namespace Lab_1_UnitTests
             (TokenType.End, "")
         };
 
-            // Act
             var actual = lexer.Tokenise();
 
-            // Assert
             AssertTokensMatch(expected, actual);
         }
 
         [TestMethod]
-        public void Tokenise_ComplexRealExpression_ReturnsCorrectSequence()
+        public void Tokenise_ComplexExpression()
         {
-            // Arrange
             var lexer = new Lexer("(A1 > 10 and B2=0) || !C3");
             var expected = new List<(TokenType type, string value)>
         {
@@ -118,53 +101,42 @@ namespace Lab_1_UnitTests
             (TokenType.End, "")
         };
 
-            // Act
             var actual = lexer.Tokenise();
 
-            // Assert
             AssertTokensMatch(expected, actual);
         }
 
-        // =================================================================
-        // НЕГАТИВНІ ТЕСТИ (перевірка правильної обробки помилок)
-        // =================================================================
 
         [TestMethod]
-        public void Tokenise_UnknownCharacter_ThrowsException()
+        public void Tokenise_UnknownCharacter()
         {
-            // Arrange
             var lexer = new Lexer("A1 # B2");
 
-            // Act & Assert
             var ex = Assert.ThrowsException<Exception>(() => lexer.Tokenise());
+
             Assert.AreEqual("Unknown character: #", ex.Message);
         }
 
         [TestMethod]
-        public void Tokenise_UnknownIdentifier_ThrowsException()
+        public void Tokenise_UnknownIdentifier()
         {
-            // Arrange
             var lexer = new Lexer("A1 someWord B2");
 
-            // Act & Assert
             var ex = Assert.ThrowsException<Exception>(() => lexer.Tokenise());
+
             Assert.AreEqual("#REF!", ex.Message);
         }
 
         [TestMethod]
-        public void Tokenise_InvalidSingleAmpersand_ThrowsException()
+        public void Tokenise_InvalidSingleAmpersand()
         {
-            // Arrange
             var lexer = new Lexer("A1 & B2");
 
-            // Act & Assert
             var ex = Assert.ThrowsException<Exception>(() => lexer.Tokenise());
+
             Assert.AreEqual("Unexpected character after &", ex.Message);
         }
 
-        // =================================================================
-        // ДОПОМІЖНИЙ МЕТОД
-        // =================================================================
         private void AssertTokensMatch(List<(TokenType type, string value)> expected, List<Token> actual)
         {
             Assert.AreEqual(expected.Count, actual.Count, "Wrong number of tokens.");
